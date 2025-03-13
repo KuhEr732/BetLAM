@@ -7,6 +7,7 @@
     <meta name="author" content="Jayden Wohles">
     <meta name="author" content="Erik Kühnemund">
     <title>BetLAM - Gratis Sportwetten</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <?php
@@ -17,7 +18,7 @@
     // Definiere eine Zuordnung von "Seiten"-Identifikatoren zu Dateipfaden
     $pages = [
         "home" => "includes/home.php",
-        "login" => "includes/login.php",
+        //"login" => "includes/login.php",
         "main" => "includes/main.php",
         "register" => "includes/register.php",
         "header" => "includes/header.php",
@@ -26,11 +27,11 @@
 
     // Funktion zum Abrufen und Einbinden der angeforderten Seite
     function getPage($pages) {
-        $page = $_GET['page'] ?? "login"; // Standardseite
+        $page = $_GET['page'] ?? "main"; // Standardseite
         if (array_key_exists($page, $pages)) {
             include $pages[$page];
         } else {
-            include $pages["login"]; // Fallback zur Anmeldeseite, wenn nicht gefunden
+            include $pages["main"]; // Fallback zur Anmeldeseite, wenn nicht gefunden
         }
     }
 
