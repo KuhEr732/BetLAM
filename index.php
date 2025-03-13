@@ -21,6 +21,11 @@
         //"login" => "includes/login.php",
         "main" => "includes/main.php",
         "register" => "includes/register.php",
+        "sports" => "includes/sports.php",
+        "live" => "includes/live.php",
+        "casino" => "includes/casino.php",
+        "promotions" => "includes/promotions.php",
+        "statistics" => "includes/statistics.php",
         "header" => "includes/header.php",
         "footer" => "includes/footer.php"
     ];
