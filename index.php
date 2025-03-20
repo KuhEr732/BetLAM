@@ -8,6 +8,7 @@
     <meta name="author" content="Erik Kühnemund">
     <title>BetLAM - Gratis Sportwetten</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/footer.css">
 </head>
 <body>
     <?php

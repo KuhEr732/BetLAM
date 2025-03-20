@@ -6,10 +6,10 @@
           <h3>SportsBet Pro</h3>
           <p>Ihre erste Adresse für Sportwetten und Online-Casino-Spiele.</p>
           <div class="social-links">
-            <a href="#" class="social-icon" aria-label="Facebook">f</a>
-            <a href="#" class="social-icon" aria-label="Twitter">t</a>
-            <a href="#" class="social-icon" aria-label="Instagram">i</a>
-            <a href="#" class="social-icon" aria-label="YouTube">y</a>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="social-icon" aria-label="Facebook">f</a>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="social-icon" aria-label="Twitter">t</a>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="social-icon" aria-label="Instagram">i</a>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="social-icon" aria-label="YouTube">y</a>
           </div>
         </div>
         

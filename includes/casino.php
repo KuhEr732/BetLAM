@@ -5,79 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slot Machine</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #4a1a6c, #2c1053);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+        /* Slot Machine Styles - angepasst an das Hauptdesign */
+        .slot-machine-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 40px auto;
             padding: 20px;
         }
 
         .slot-machine {
-            background: linear-gradient(to bottom, #8B4513, #654321);
-            border: 4px solid #b38728;
-            border-radius: 12px;
+            background-color: #1a1a2e;
+            border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid #333;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
         }
 
         .credits {
-            background-color: black;
-            color: #ffd700;
-            padding: 5px 10px;
-            border-radius: 5px;
+            background-color: #2a2a4a;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
             font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .reels-container {
-            background-color: black;
-            padding: 15px;
+            background-color: #0f0f1e;
+            padding: 20px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             position: relative;
             overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
         .reels {
             display: flex;
             justify-content: center;
-            gap: 10px;
-        }
-
-        .reel {
-            width: 80px;
-            height: 80px;
-            background-color: white;
-            border: 2px solid #333;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 40px;
-            overflow: hidden;
-            position: relative;
+            gap: 15px;
         }
 
         .reel-container {
             height: 80px;
+            width: 80px;
             overflow: hidden;
             position: relative;
+            border-radius: 4px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .reel-strip {
@@ -100,6 +88,7 @@
             justify-content: center;
             align-items: center;
             font-size: 40px;
+            background-color: white;
         }
 
         @keyframes spin-reel {
@@ -109,25 +98,27 @@
 
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 15px;
         }
 
         .spin-button {
-            background: linear-gradient(to right, #d32f2f, #b71c1c);
+            background-color: #e51b1b;
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 4px;
+            padding: 12px 20px;
             font-weight: bold;
             font-size: 16px;
             flex-grow: 1;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .spin-button:hover:not(:disabled) {
-            transform: scale(1.05);
-            background: linear-gradient(to right, #c62828, #a31515);
+            background-color: #c41717;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .spin-button:disabled {
@@ -136,13 +127,18 @@
         }
 
         .add-credits {
-            background: linear-gradient(to right, #2e7d32, #1b5e20);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
+            background-color: transparent;
+            color: #e51b1b;
+            border: 1px solid #e51b1b;
+            border-radius: 4px;
+            padding: 12px 20px;
             font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-credits:hover {
+            background-color: rgba(229, 27, 27, 0.1);
         }
 
         .win-effect {
@@ -158,6 +154,7 @@
             align-items: center;
             z-index: 10;
             animation: bounce 0.5s infinite alternate;
+            border-radius: 8px;
         }
 
         @keyframes bounce {
@@ -166,15 +163,16 @@
         }
 
         .win-text {
-            color: #ffd700;
-            font-size: 32px;
+            color: #ffcc00;
+            font-size: 28px;
             font-weight: bold;
             margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
         }
 
         .win-amount {
             color: white;
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .lose-effect {
@@ -189,68 +187,118 @@
             justify-content: center;
             align-items: center;
             z-index: 10;
+            border-radius: 8px;
         }
 
         .lose-text {
-            color: #ff5252;
-            font-size: 24px;
+            color: #e51b1b;
+            font-size: 22px;
             font-weight: bold;
             margin-bottom: 10px;
         }
 
         .lose-subtext {
             color: white;
-            font-size: 18px;
+            font-size: 16px;
+        }
+
+        /* Responsive Anpassungen */
+        @media (max-width: 768px) {
+            .slot-machine-container {
+                padding: 10px;
+            }
+            
+            .reels {
+                gap: 10px;
+            }
+            
+            .reel-container {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .symbol {
+                width: 70px;
+                height: 70px;
+                font-size: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slot-machine {
+                padding: 15px;
+            }
+            
+            .reel-container {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .symbol {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .add-credits {
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="slot-machine">
-        <div class="header">
-            <div class="credits">
-                <span class="coin-icon">🪙</span>
-                <span id="credits-display">100</span>
-            </div>
-        </div>
-        
-        <div class="reels-container" id="reels-container">
-            <div class="reels">
-                <div class="reel-container">
-                    <div class="reel-strip" id="reel1">
-                        <div class="symbol">🍒</div>
-                        <div class="symbol">🍋</div>
-                        <div class="symbol">🍊</div>
-                        <div class="symbol">🍇</div>
-                        <div class="symbol">7️⃣</div>
-                        <div class="symbol">🍒</div> <!-- Wiederholen für nahtloses Scrollen -->
-                    </div>
-                </div>
-                <div class="reel-container">
-                    <div class="reel-strip" id="reel2">
-                        <div class="symbol">🍒</div>
-                        <div class="symbol">🍋</div>
-                        <div class="symbol">🍊</div>
-                        <div class="symbol">🍇</div>
-                        <div class="symbol">7️⃣</div>
-                        <div class="symbol">🍒</div> <!-- Wiederholen für nahtloses Scrollen -->
-                    </div>
-                </div>
-                <div class="reel-container">
-                    <div class="reel-strip" id="reel3">
-                        <div class="symbol">🍒</div>
-                        <div class="symbol">🍋</div>
-                        <div class="symbol">🍊</div>
-                        <div class="symbol">🍇</div>
-                        <div class="symbol">7️⃣</div>
-                        <div class="symbol">🍒</div> <!-- Wiederholen für nahtloses Scrollen -->
-                    </div>
+    <div class="slot-machine-container">
+        <div class="slot-machine">
+            <div class="header">
+                <div class="credits">
+                    <span class="coin-icon">🪙</span>
+                    <span id="credits-display">100</span>
                 </div>
             </div>
-        </div>
-        
-        <div class="controls">
-            <button class="spin-button" id="spin-button">DREHEN (10 CREDITS)</button>
-            <button class="add-credits" id="add-credits">+100</button>
+            
+            <div class="reels-container" id="reels-container">
+                <div class="reels">
+                    <div class="reel-container">
+                        <div class="reel-strip" id="reel1">
+                            <div class="symbol">🍒</div>
+                            <div class="symbol">🍋</div>
+                            <div class="symbol">🍊</div>
+                            <div class="symbol">🍇</div>
+                            <div class="symbol">7️⃣</div>
+                            <div class="symbol">🍒</div> <!-- Wiederholen für nahtloses Scrollen -->
+                        </div>
+                    </div>
+                    <div class="reel-container">
+                        <div class="reel-strip" id="reel2">
+                            <div class="symbol">🍒</div>
+                            <div class="symbol">🍋</div>
+                            <div class="symbol">🍊</div>
+                            <div class="symbol">🍇</div>
+                            <div class="symbol">7️⃣</div>
+                            <div class="symbol">🍒</div> <!-- Wiederholen für nahtloses Scrollen -->
+                        </div>
+                    </div>
+                    <div class="reel-container">
+                        <div class="reel-strip" id="reel3">
+                            <div class="symbol">🍒</div>
+                            <div class="symbol">🍋</div>
+                            <div class="symbol">🍊</div>
+                            <div class="symbol">🍇</div>
+                            <div class="symbol">7️⃣</div>
+                            <div class="symbol">🍒</div> <!-- Wiederholen für nahtloses Scrollen -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="spin-button" id="spin-button">DREHEN (10 CREDITS)</button>
+                <button class="add-credits" id="add-credits">+100</button>
+            </div>
         </div>
     </div>
 
@@ -421,5 +469,3 @@
         // Initialisierung
         updateCreditsDisplay();
     </script>
-</body>
-</html>
