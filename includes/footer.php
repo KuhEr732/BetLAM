@@ -3,8 +3,8 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-column">
-          <h3>SportsBet Pro</h3>
-          <p>Ihre erste Adresse für Sportwetten und Online-Casino-Spiele.</p>
+          <h3>BetLam</h3>
+          <p>Ihre erste Adresse für Sportwetten und Online-Casino-Spiele. 100% Gratis</p>
           <div class="social-links">
             <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="social-icon" aria-label="Facebook">f</a>
             <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="social-icon" aria-label="Twitter">t</a>
@@ -49,7 +49,7 @@
       
       <div class="footer-bottom">
         <div class="responsible-gambling">
-          <strong>Verantwortungsvolles Spielen:</strong> SportsBet Pro fördert verantwortungsvolles Spielen. 
+          <strong>Verantwortungsvolles Spielen:</strong> BetLAM fördert verantwortungsvolles Spielen. 
           Glücksspiel sollte unterhaltsam sein und kein Weg, um Geld zu verdienen. 
           Laufen Sie Ihren Verlusten nicht hinterher und setzen Sie nur so viel ein, wie Sie sich leisten können zu verlieren.
         </div>
@@ -59,7 +59,7 @@
         </div>
         
         <div class="copyright">
-          &copy; 2025 SportsBet Pro. Alle Rechte vorbehalten. Dies ist eine fiktive Website, die nur zu Demonstrationszwecken erstellt wurde.
+          &copy; 2025 BetLAM. Alle Rechte vorbehalten. Dies ist eine fiktive Website, die nur zu Demonstrationszwecken erstellt wurde.
         </div>
       </div>
     </div>

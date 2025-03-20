@@ -5,7 +5,7 @@
       
       <a href="index.php?page=main" class="logo">
         <div class="logo-img"></div>
-        <span class="logo-text">SportsBet Pro</span>
+        <span class="logo-text">BetLAM</span>
       </a>
       
       <nav class="main-nav">
