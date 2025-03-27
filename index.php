@@ -14,6 +14,8 @@
     <?php
     include_once "includes/header.php";
 
+    include_once "db.php";
+
 
 
     // Definiere eine Zuordnung von "Seiten"-Identifikatoren zu Dateipfaden
