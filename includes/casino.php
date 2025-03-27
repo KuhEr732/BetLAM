@@ -248,6 +248,66 @@
                 text-align: center;
             }
         }
+
+        .jackpot-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .jackpot-container {
+            text-align: center;
+            animation: jackpot-zoom 1s ease-in-out infinite alternate;
+        }
+
+        .jackpot-title {
+            font-size: 5rem;
+            color: #ffcc00;
+            text-shadow: 0 0 20px #ffcc00, 0 0 40px #ff0000;
+            animation: jackpot-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        .jackpot-amount {
+            font-size: 4rem;
+            color: #ffffff;
+            text-shadow: 0 0 15px #ffffff;
+        }
+
+        .jackpot-confetti {
+            position: absolute;
+            pointer-events: none;
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            transform: rotate(45deg);
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes jackpot-zoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        @keyframes jackpot-glow {
+            0% { text-shadow: 0 0 20px #ffcc00, 0 0 40px #ff0000; }
+            100% { text-shadow: 0 0 30px #ffcc00, 0 0 50px #ff0000; }
+        }
+
+        @keyframes fall {
+            to {
+                transform: 
+                    translateY(100vh) 
+                    rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -468,4 +528,72 @@
         
         // Initialisierung
         updateCreditsDisplay();
+
+        function createJackpotAnimation(amount) {
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'jackpot-overlay';
+
+        // Jackpot container
+        const container = document.createElement('div');
+        container.className = 'jackpot-container';
+
+        // Jackpot title
+        const title = document.createElement('div');
+        title.className = 'jackpot-title';
+        title.textContent = 'JACKPOT!';
+
+        // Jackpot amount
+        const amountElement = document.createElement('div');
+        amountElement.className = 'jackpot-amount';
+        amountElement.textContent = `+${amount} CREDITS`;
+
+        container.appendChild(title);
+        container.appendChild(amountElement);
+        overlay.appendChild(container);
+
+        // Add confetti
+        function addConfetti() {
+            for (let i = 0; i < 200; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'jackpot-confetti';
+                
+                // Randomize position, color, and fall
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = [
+                    '#ffcc00', '#ff0000', '#ffffff', '#00ff00', 
+                    '#0000ff', '#ff00ff'
+                ][Math.floor(Math.random() * 6)];
+                
+                // Randomize fall animation
+                confetti.style.animationDelay = `${Math.random() * 3}s`;
+                confetti.style.animationDuration = `${3 + Math.random() * 2}s`;
+
+                overlay.appendChild(confetti);
+            }
+        }
+
+        addConfetti();
+
+        // Add to body and remove after 5 seconds
+        document.body.appendChild(overlay);
+        
+        setTimeout(() => {
+            document.body.removeChild(overlay);
+        }, 5000);
+    }
+
+    // Modify the existing checkWin function to add jackpot logic
+    const originalCheckWin = window.checkWin;
+    window.checkWin = function(results) {
+        // Call original check win
+        originalCheckWin(results);
+
+        // Check for super jackpot (all 7s)
+        if (results[0] === 4 && results[1] === 4 && results[2] === 4) {
+            createJackpotAnimation(500);
+        }
+    };
+
+
     </script>
