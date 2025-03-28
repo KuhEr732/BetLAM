@@ -124,45 +124,6 @@ ul {
   cursor: pointer;
 }
 
-/* Footer styles */
-.site-footer {
-  margin-top: auto;
-  background-color: #1a1a2e;
-  color: #ccc;
-  padding: 40px 0 20px;
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 30px;
-  margin-bottom: 30px;
-}
-
-.footer-column h3 {
-  color: white;
-  margin-bottom: 15px;
-  font-size: 1.1rem;
-}
-
-.footer-column p {
-  margin-bottom: 15px;
-  font-size: 0.9rem;
-}
-
-.footer-column ul li {
-  margin-bottom: 8px;
-}
-
-.footer-column ul li a {
-  font-size: 0.9rem;
-  transition: color 0.3s;
-}
-
-.footer-column ul li a:hover {
-  color: white;
-}
-
 .social-links {
   display: flex;
   gap: 15px;
@@ -182,13 +143,6 @@ ul {
 
 .social-icon:hover {
   background-color: #e51b1b;
-}
-
-.footer-bottom {
-  border-top: 1px solid #333;
-  padding-top: 20px;
-  font-size: 0.8rem;
-  color: #999;
 }
 
 .responsible-gambling {
