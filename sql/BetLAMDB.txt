@@ -1,0 +1,74 @@
+CREATE DATABASE CasinoDB;
+USE CasinoDB;
+
+-- Users table
+CREATE TABLE tblUser (
+    idUser INT AUTO_INCREMENT PRIMARY KEY,
+    dtUsername VARCHAR(50) UNIQUE NOT NULL,
+    dtPasswordHash VARCHAR(255) NOT NULL,
+    dtEmail VARCHAR(100) UNIQUE NOT NULL,
+    dtBalance DECIMAL(10,2) DEFAULT 0.00,
+    dtCreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dtLastLogin TIMESTAMP NULL
+);
+
+-- Games table
+CREATE TABLE tblGame (
+    idGame INT AUTO_INCREMENT PRIMARY KEY,
+    dtName VARCHAR(100) NOT NULL,
+    dtType ENUM('slot', 'poker', 'blackjack', 'roulette', 'baccarat', 'sportsbet') NOT NULL,
+    dtMinBet DECIMAL(10,2) DEFAULT 0.00,
+    dtMaxBet DECIMAL(10,2) DEFAULT 10000.00
+);
+
+-- Transactions Table
+CREATE TABLE tblTransaction (
+    idTransaction INT AUTO_INCREMENT PRIMARY KEY,
+    fiUser INT,
+    dtAmount DECIMAL(10,2) NOT NULL,
+    dtType ENUM('deposit', 'withdrawal') NOT NULL,
+    dtStatus ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    dtCreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fiUser) REFERENCES tblUser(idUser)
+);
+
+-- Bets table
+CREATE TABLE tblBet (
+    idBet INT AUTO_INCREMENT PRIMARY KEY,
+    fiUser INT,
+    fiGame INT,
+    dtAmount DECIMAL(10,2) NOT NULL,
+    dtOutcome ENUM('win', 'loss', 'pending') DEFAULT 'pending',
+    dtWinnings DECIMAL(10,2) DEFAULT 0.00,
+    dtPlacedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fiUser) REFERENCES tblUser(idUser),
+    FOREIGN KEY (fiGame) REFERENCES tblGame(idGame)
+);
+
+-- Leaderboard table
+CREATE TABLE tblLeaderboard (
+    idRank INT AUTO_INCREMENT PRIMARY KEY,
+    fiUser INT,
+    dtTotalWinnings DECIMAL(10,2) DEFAULT 0.00,
+    dtLastUpdated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (fiUser) REFERENCES tblUser(idUser)
+);
+
+-- Bonus system
+CREATE TABLE tblBonus (
+    idBonus INT AUTO_INCREMENT PRIMARY KEY,
+    fiUser INT,
+    dtAmount DECIMAL(10,2) NOT NULL,
+    dtStatus ENUM('active', 'expired', 'used') DEFAULT 'active',
+    dtExpiresAt TIMESTAMP NULL,
+    FOREIGN KEY (fiUser) REFERENCES tblUser(idUser)
+);
+
+-- Audit log for security
+CREATE TABLE tblAuditLog (
+    idLog INT AUTO_INCREMENT PRIMARY KEY,
+    fiUser INT,
+    dtAction TEXT NOT NULL,
+    dtCreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fiUser) REFERENCES tblUser(idUser)
+);

@@ -14,12 +14,14 @@
     <?php
     include_once "includes/header.php";
 
+    include_once "db.php";
+
 
 
     // Definiere eine Zuordnung von "Seiten"-Identifikatoren zu Dateipfaden
     $pages = [
         "home" => "includes/home.php",
-        //"login" => "includes/login.php",
+        "login" => "includes/login.php",
         "main" => "includes/main.php",
         "register" => "includes/register.php",
         "sports" => "includes/sports.php",
@@ -28,7 +30,8 @@
         "promotions" => "includes/promotions.php",
         "statistics" => "includes/statistics.php",
         "header" => "includes/header.php",
-        "footer" => "includes/footer.php"
+        "footer" => "includes/footer.php",
+        "logout" => "includes/logout.php"
     ];
 
     // Funktion zum Abrufen und Einbinden der angeforderten Seite
