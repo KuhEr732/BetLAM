@@ -13,7 +13,6 @@
         <nav class="main-nav">
             <ul>
                 <li><a href="index.php?page=sports">Sports</a></li>
-                <li><a href="index.php?page=live">Live Wetten</a></li>
                 <li><a href="index.php?page=casino">Casino</a></li>
                 <li><a href="index.php?page=promotions">Promotionen</a></li>
                 <li><a href="index.php?page=statistics">Statistiken</a></li>

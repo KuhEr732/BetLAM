@@ -4,7 +4,7 @@ require '../db.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-session_start(); // GANZ WICHTIG!!!
+session_start(); 
 
 global $pdo;
 
@@ -19,7 +19,7 @@ $userId = $_SESSION['userId'];
 $today = date('Y-m-d');
 $seed = hexdec(substr(sha1($today), 0, 8)); // täglicher Seed
 mt_srand($seed);
-$reward = mt_rand(100, 1000); // z.B. zwischen 50 und 100 Coins
+$reward = mt_rand(100, 1000); // z.B. zwischen 100 und 1000 Coins
 
 // Prüfen, ob der Bonus schon eingelöst wurde
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM tblBonus WHERE fiUser = ? AND dtStatus = 'used' AND DATE(dtClaimDate) = ?");

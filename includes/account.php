@@ -40,11 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_balance'])) {
             $pdo->commit();
             
             // Log the action
-            $action = "Added {$amount} € to account balance";
+            $action = "Added {$amount} coins to account balance";
             $logStmt = $pdo->prepare("INSERT INTO tblAuditLog (fiUser, dtAction) VALUES (?, ?)");
             $logStmt->execute([$userId, $action]);
             
-            $successMessage = "Erfolgreich {$amount} € zum Guthaben hinzugefügt!";
+            $successMessage = "Erfolgreich {$amount} coins zum Guthaben hinzugefügt!";
         } catch (Exception $e) {
             $pdo->rollBack();
             $errorMessage = "Fehler beim Hinzufügen des Guthabens. Bitte versuchen Sie es später erneut.";
@@ -145,10 +145,12 @@ $betStmt->execute([$userId]);
 $bets = $betStmt->fetchAll();
 
 // Fetch active bonuses
-$bonusStmt = $pdo->prepare("SELECT dtAmount, dtStatus, dtExpiresAt FROM tblBonus WHERE fiUser = ? AND dtStatus = 'active' ORDER BY dtExpiresAt ASC");
+$bonusStmt = $pdo->prepare("SELECT dtAmount, dtStatus, dtExpiresAt, dtClaimDate 
+                           FROM tblBonus 
+                           WHERE fiUser = ? AND dtStatus = 'used' 
+                           ORDER BY COALESCE(dtExpiresAt, '9999-12-31') ASC");
 $bonusStmt->execute([$userId]);
 $bonuses = $bonusStmt->fetchAll();
-
 ?>
     <link rel="stylesheet" href="css/account.css">
     
@@ -170,6 +172,7 @@ $bonuses = $bonusStmt->fetchAll();
             <button class="tab-button active" onclick="openTab(event, 'profile')">Profil</button>
             <button class="tab-button" onclick="openTab(event, 'balance')">Guthaben aufladen</button>
             <button class="tab-button" onclick="openTab(event, 'transactions')">Transaktionen</button>
+            <button class="tab-button" onclick="openTab(event, 'bonuses')">Bonusse</button>
         </div>
         
         <div id="profile" class="tab-content active">
@@ -312,25 +315,61 @@ $bonuses = $bonusStmt->fetchAll();
                 <p>Keine Transaktionen vorhanden.</p>
             <?php endif; ?>
         </div>
+
+        <div id="bonuses" class="tab-content">
+    <h3>Bonus Historie</h3>
+    <?php if (!empty($bonuses)): ?>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Betrag</th>
+                    <th>Status</th>
+                    <th>Gültig bis</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($bonuses as $bonus): ?>
+                    <tr>
+                        <td><?php echo number_format($bonus['dtAmount'], 0, ',', '.'); ?> Coins</td>
+                        <td>
+                            <?php 
+                            if ($bonus['dtStatus'] === 'used') {
+                                echo 'used';
+                            } else {
+                                echo 'Inaktiv';
+                            }
+                            ?>
+                        </td>
+                        <td><?php echo $bonus['dtExpiresAt'] ? date('d.m.Y H:i', strtotime($bonus['dtExpiresAt'])) : 'Unbegrenzt'; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p>Keine Boni vorhanden.</p>
+    <?php endif; ?>
     </div>
+    </div>
+    
+
     <script>
-        function openTab(evt, tabName) {
-            // Hide all tab content
-            var tabContent = document.getElementsByClassName("tab-content");
-            for (var i = 0; i < tabContent.length; i++) {
-                tabContent[i].classList.remove("active");
-            }
-            
-            // Remove active class from all tab buttons
-            var tabButtons = document.getElementsByClassName("tab-button");
-            for (var i = 0; i < tabButtons.length; i++) {
-                tabButtons[i].classList.remove("active");
-            }
-            
-            // Show the selected tab and add active class to the button
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
+            function openTab(evt, tabName) {
+        // Hide all tab content
+        var tabContent = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < tabContent.length; i++) {
+            tabContent[i].classList.remove("active");
         }
+        
+        // Remove active class from all tab buttons
+        var tabButtons = document.getElementsByClassName("tab-button");
+        for (var i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
+        
+        // Show the selected tab and add active class to the button
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
     </script>
 <?php
 $pdo = null;

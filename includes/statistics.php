@@ -1,19 +1,25 @@
 <?php
+// Datenbankverbindung einbinden
 require 'db.php';
 
+// Zugriff auf das globale PDO-Objekt
 global $pdo;
 
-$minBalance = $_POST['minBalance'] ?? 0;
-$usernameFilter = $_POST['username'] ?? '';
-$sort = $_POST['sort'] ?? 'dtBalance';
-$order = $_POST['order'] ?? 'DESC';
+// Eingaben aus dem Formular mit Fallback-Werten lesen
+$minBalance = $_POST['minBalance'] ?? 0;          
+$usernameFilter = $_POST['username'] ?? '';       
+$sort = $_POST['sort'] ?? 'dtBalance';            
+$order = $_POST['order'] ?? 'DESC';               
 
+// Erlaubte Werte für Sortierung und Reihenfolge
 $validSorts = ['dtUsername', 'dtBalance', 'dtCreatedAt'];
 $validOrders = ['ASC', 'DESC'];
 
+// Ungültige Eingaben durch Standardwerte ersetzen
 if (!in_array($sort, $validSorts)) $sort = 'dtBalance';
 if (!in_array($order, $validOrders)) $order = 'DESC';
 
+// SQL-Abfrage vorbereiten mit Platzhaltern für Parameter
 $sql = "SELECT idUser, dtUsername, dtEmail, dtBalance, dtCreatedAt, dtLastLogin
         FROM tblUser
         WHERE dtBalance >= :minBalance
@@ -21,14 +27,17 @@ $sql = "SELECT idUser, dtUsername, dtEmail, dtBalance, dtCreatedAt, dtLastLogin
         ORDER BY $sort $order
         LIMIT 50";
 
+// SQL-Statement vorbereiten und Parameter binden
 $stmt = $pdo->prepare($sql);
 $stmt->execute([
     ':minBalance' => $minBalance,
-    ':username' => '%' . $usernameFilter . '%'
+    ':username' => '%' . $usernameFilter . '%'  // LIKE-Filter mit Wildcards
 ]);
 
+// Ergebnis als Array abholen
 $users = $stmt->fetchAll();
 ?>
+
     <meta charset="UTF-8">
     <title>Top User Statistiken</title>
     <style>

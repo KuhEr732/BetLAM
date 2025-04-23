@@ -61,6 +61,7 @@ CREATE TABLE tblBonus (
     dtAmount DECIMAL(10,2) NOT NULL,
     dtStatus ENUM('active', 'expired', 'used') DEFAULT 'active',
     dtExpiresAt TIMESTAMP NULL,
+    dtClaimDate datetime,
     FOREIGN KEY (fiUser) REFERENCES tblUser(idUser)
 );
 
