@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BetLAM - Gratis Wetten & Spaß</title>
     <style>
         /*styling*/  
         body {
@@ -98,8 +92,7 @@
             100% { transform: rotateX(360deg); }
         }
     </style>
-</head>
-<body>
+
     <div class="container">
         <h1>Willkommen bei BetLAM</h1>
         <p>Wetten ohne echtes Geld – <span class="highlight">100% Gratis, 100% Spannung!</span></p>
@@ -108,5 +101,4 @@
         <a href="#" class="cta">⚡ Mehr Erfahren ⚡</a>
         <br><div class="slot-machine">🎰 7️⃣ 🍒 🔔 🎰</div>
     </div>
-</body>
-</html>
+

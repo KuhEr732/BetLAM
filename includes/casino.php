@@ -1,7 +1,12 @@
 <link rel="stylesheet" href="css/casino.css">
 
-<!-- Original Slot Machine Code (Unchanged) -->
-<div class="slot-machine-container">
+<div class="game-selector">
+    <button id="slots-button" class="game-button active">Slot Machine</button>
+    <button id="roulette-button" class="game-button">Roulette</button>
+</div>
+
+<!-- Original Slot Machine Code -->
+<div class="slot-machine-container game-container" id="slots-game">
     <div class="slot-machine">
         <div class="header">
             <div class="credits">
@@ -53,7 +58,7 @@
 </div>
 
 <!-- New Roulette Game -->
-<div class="roulette-container">
+<div class="roulette-container game-container" id="roulette-game" style="display: none;">
     <div class="roulette-game">
         <div class="header">
             <h2>Roulette</h2>
@@ -109,6 +114,28 @@
 </div>
 
 <script>
+    // Game selector logic
+    document.addEventListener('DOMContentLoaded', function() {
+        const slotsButton = document.getElementById('slots-button');
+        const rouletteButton = document.getElementById('roulette-button');
+        const slotsGame = document.getElementById('slots-game');
+        const rouletteGame = document.getElementById('roulette-game');
+        
+        slotsButton.addEventListener('click', function() {
+            slotsGame.style.display = 'block';
+            rouletteGame.style.display = 'none';
+            slotsButton.classList.add('active');
+            rouletteButton.classList.remove('active');
+        });
+        
+        rouletteButton.addEventListener('click', function() {
+            slotsGame.style.display = 'none';
+            rouletteGame.style.display = 'block';
+            rouletteButton.classList.add('active');
+            slotsButton.classList.remove('active');
+        });
+    });
+
     // Original Slot Machine Script (Unchanged)
     // Elemente
     const reelsContainer = document.getElementById('reels-container');
@@ -475,6 +502,43 @@
 
 <style>
 /* Original slot machine styles can stay in casino.css */
+
+/* Game Selector Styles */
+.game-selector {
+    max-width: 600px;
+    margin: 20px auto;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.game-button {
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: #333;
+    color: white;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.game-button:hover {
+    background-color: #444;
+}
+
+.game-button.active {
+    background-color: #9e1313;
+    box-shadow: 0 0 10px rgba(158, 19, 19, 0.5);
+}
+
+/* Game Container Styles */
+.game-container {
+    transition: display 0.5s ease-in-out;
+}
 
 /* New Roulette Game Styles */
 .roulette-container {

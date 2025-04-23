@@ -1,9 +1,14 @@
 <?php
-// Datenbankverbindung
-$host = 'localhost';
-$dbname = 'CasinoDB';
-$username = 'root';
-$password = '';
+// Check if this file has already been included
+if (!defined('DB_INCLUDED')) {
+    define('DB_INCLUDED', true);
+
+    // Your existing db.php code here
+    // Datenbankverbindung
+    $host = 'localhost';
+    $dbname = 'CasinoDB';
+    $username = 'root';
+    $password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
@@ -214,5 +219,6 @@ function evaluateBetslipsForMatch($matchId, $homeScore, $awayScore) {
             }
         }
     }
+}
 }
 ?>
