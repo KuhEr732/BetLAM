@@ -31,7 +31,8 @@
         "statistics" => "includes/statistics.php",
         "header" => "includes/header.php",
         "footer" => "includes/footer.php",
-        "logout" => "includes/logout.php"
+        "logout" => "includes/logout.php",
+        "account" => "includes/account.php"
     ];
 
     // Funktion zum Abrufen und Einbinden der angeforderten Seite
