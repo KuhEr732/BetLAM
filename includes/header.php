@@ -22,7 +22,35 @@
 
         <div class="user-actions">
             <?php if (isset($_SESSION['userId'])): ?>
-                <!-- Eingeloggt: Zeige Logout-Button -->
+                <?php
+                    // Fetch user data from database
+                    include 'functions.php';
+                    $conn = db_connection();
+                    $userId = $_SESSION['userId'];
+                    
+                    $query = "SELECT dtUsername, dtBalance FROM tblUser WHERE idUser = ?";
+                    $stmt = mysqli_prepare($conn, $query);
+                    
+                    if ($stmt) {
+                        mysqli_stmt_bind_param($stmt, 'i', $userId);
+                        mysqli_stmt_execute($stmt);
+                        $result = mysqli_stmt_get_result($stmt);
+                        $userData = mysqli_fetch_assoc($result);
+                        mysqli_stmt_close($stmt);
+                        mysqli_close($conn);
+                        
+                        $username = $userData['dtUsername'] ?? 'Benutzer';
+                        $balance = $userData['dtBalance'] ?? 0;
+                    } else {
+                        $username = 'Benutzer';
+                        $balance = 0;
+                    }
+                ?>
+                <!-- Eingeloggt: Zeige Benutzerinfo und Logout-Button -->
+                <div class="user-info">
+                    <a href="index.php?page=account" class="username"><?php echo htmlspecialchars($username); ?></a>
+                    <div class="balance"><?php echo number_format($balance, 0, ',', '.'); ?> Coins</div>
+                </div>
                 <a href="index.php?page=logout" class="btn btn-danger">Logout</a>
             <?php else: ?>
                 <!-- Nicht eingeloggt: Zeige Login- und Registrieren-Buttons -->
