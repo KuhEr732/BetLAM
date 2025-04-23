@@ -1,4 +1,5 @@
 <?php
+// account.php
 
 // Redirect if not logged in
 if (!isset($_SESSION['userId'])) {
@@ -6,12 +7,51 @@ if (!isset($_SESSION['userId'])) {
     exit();
 }
 
-// account.php
 $conn = db_connection();
-
 $userId = $_SESSION['userId'];
 $successMessage = '';
 $errorMessage = '';
+
+// Process balance deposit
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_balance'])) {
+    $amount = floatval($_POST['amount']);
+    
+    // Validate amount
+    if ($amount <= 0) {
+        $errorMessage = "Ungültiger Betrag. Bitte geben Sie einen positiven Wert ein.";
+    } else {
+        // Add transaction record
+        $transactionQuery = "INSERT INTO tblTransaction (fiUser, dtAmount, dtType, dtStatus) VALUES (?, ?, 'deposit', 'completed')";
+        $transStmt = mysqli_prepare($conn, $transactionQuery);
+        mysqli_stmt_bind_param($transStmt, 'id', $userId, $amount);
+        
+        // Update user balance
+        $updateBalanceQuery = "UPDATE tblUser SET dtBalance = dtBalance + ? WHERE idUser = ?";
+        $balanceStmt = mysqli_prepare($conn, $updateBalanceQuery);
+        mysqli_stmt_bind_param($balanceStmt, 'di', $amount, $userId);
+        
+        // Execute both queries as transaction
+        mysqli_begin_transaction($conn);
+        
+        try {
+            mysqli_stmt_execute($transStmt);
+            mysqli_stmt_execute($balanceStmt);
+            mysqli_commit($conn);
+            
+            // Log the action
+            $action = "Added {$amount} € to account balance";
+            $logQuery = "INSERT INTO tblAuditLog (fiUser, dtAction) VALUES (?, ?)";
+            $logStmt = mysqli_prepare($conn, $logQuery);
+            mysqli_stmt_bind_param($logStmt, 'is', $userId, $action);
+            mysqli_stmt_execute($logStmt);
+            
+            $successMessage = "Erfolgreich {$amount} € zum Guthaben hinzugefügt!";
+        } catch (Exception $e) {
+            mysqli_rollback($conn);
+            $errorMessage = "Fehler beim Hinzufügen des Guthabens. Bitte versuchen Sie es später erneut.";
+        }
+    }
+}
 
 // Process form submission for updating profile
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
@@ -312,6 +352,40 @@ mysqli_close($conn);
         .account-info-value {
             font-weight: 400;
         }
+        
+        /* New styles for balance buttons */
+        .balance-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .balance-button {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+        }
+        
+        .balance-button:hover {
+            background-color: #218838;
+        }
+        
+        .balance-heading {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -333,6 +407,7 @@ mysqli_close($conn);
         
         <div class="account-tabs">
             <button class="tab-button active" onclick="openTab(event, 'profile')">Profil</button>
+            <button class="tab-button" onclick="openTab(event, 'balance')">Guthaben aufladen</button>
             <button class="tab-button" onclick="openTab(event, 'transactions')">Transaktionen</button>
             <button class="tab-button" onclick="openTab(event, 'bets')">Wettverlauf</button>
             <button class="tab-button" onclick="openTab(event, 'bonuses')">Boni</button>
@@ -393,6 +468,39 @@ mysqli_close($conn);
                 <button type="submit" name="update_profile" class="btn btn-primary">Profil aktualisieren</button>
             </form>
         </div>
+
+        <div id="balance" class="tab-content">
+            <h3 class="balance-heading">Guthaben aufladen</h3>
+            <p>Wählen Sie einen Betrag aus, um Ihr Guthaben aufzuladen:</p>
+            
+            <div class="balance-buttons">
+                <form method="POST" action="">
+                    <input type="hidden" name="amount" value="100">
+                    <button type="submit" name="add_balance" class="balance-button">100</button>
+                </form>
+                
+                <form method="POST" action="">
+                    <input type="hidden" name="amount" value="250">
+                    <button type="submit" name="add_balance" class="balance-button">250</button>
+                </form>
+                
+                <form method="POST" action="">
+                    <input type="hidden" name="amount" value="1000">
+                    <button type="submit" name="add_balance" class="balance-button">1000</button>
+                </form>
+            </div>
+            
+            <div class="account-info-card">
+                <h4>Benutzerdefinierter Betrag</h4>
+                <form method="POST" action="">
+                    <div class="form-group">
+                        <label for="custom_amount">Geben Sie einen Betrag ein (Coins):</label>
+                        <input type="number" min="10" step="0.01" class="form-control" id="custom_amount" name="amount" placeholder="Betrag eingeben">
+                    </div>
+                    <button type="submit" name="add_balance" class="btn btn-primary">Guthaben aufladen</button>
+                </form>
+            </div>
+        </div>
         
         <div id="transactions" class="tab-content">
             <h3>Transaktionshistorie</h3>
@@ -418,7 +526,7 @@ mysqli_close($conn);
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?php echo number_format($transaction['dtAmount'], 2, ',', '.'); ?> €
+                                    <?php echo number_format($transaction['dtAmount'], 0, ',', '.'); ?> Coins
                                 </td>
                                 <td>
                                     <span class="status-badge status-<?php echo $transaction['dtStatus']; ?>">
