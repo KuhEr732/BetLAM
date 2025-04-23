@@ -1,5 +1,5 @@
+<link rel="stylesheet" href="css/register.css">
 <?php
-session_start();
 require "functions.php";
 
 // Funktion zum Generieren eines zufälligen alphanumerischen Captchas

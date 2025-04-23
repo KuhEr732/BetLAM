@@ -1,5 +1,4 @@
 <?php
-session_start();
 include 'functions.php';
 
 $conn = db_connection();
@@ -38,9 +37,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['BUTTON_login'])) {
     mysqli_close($conn);
 }
 ?>
-
-<div>
-    <form method="POST">
+<link rel="stylesheet" href="css/login.css">
+<main>
+  <div class="container login-container">
+    <div class="login-form">
+      <h2>Sign In to Your Account</h2>
+      
+      <?php if (!empty($error_message)): ?>
+        <div class="login-error">
+          <?php echo htmlspecialchars($error_message); ?>
+        </div>
+      <?php endif; ?>
+      
+      <form method="POST">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required placeholder="Enter your email">
 
@@ -48,5 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['BUTTON_login'])) {
         <input type="password" id="password" name="password" required placeholder="Enter your password">
 
         <button type="submit" name="BUTTON_login" class="login-btn">Sign In</button>
-    </form>
-</div>
+        
+        <div class="register-link">
+          Don't have an account? <a href="index.php?page=register">Register now</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
