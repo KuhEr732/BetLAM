@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['BUTTON_login'])) {
 <main>
   <div class="container login-container">
     <div class="login-form">
-      <h2>Sign In to Your Account</h2>
+      <h2>Benutzer Log-In</h2>
       
       <?php if (!empty($error_message)): ?>
         <div class="login-error">
@@ -51,15 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['BUTTON_login'])) {
       
       <form method="POST">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" required placeholder="Enter your email">
+        <input type="email" id="email" name="email" required placeholder="Email eingeben">
 
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required placeholder="Enter your password">
+        <label for="password">Passwort</label>
+        <input type="password" id="password" name="password" required placeholder="Passwort eingeben">
 
-        <button type="submit" name="BUTTON_login" class="login-btn">Sign In</button>
+        <button type="submit" name="BUTTON_login" class="login-btn">Anmelden</button>
         
         <div class="register-link">
-          Don't have an account? <a href="index.php?page=register">Register now</a>
+          Kein Account? <a href="index.php?page=register">Registrieren</a>
         </div>
       </form>
     </div>

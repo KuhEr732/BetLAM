@@ -565,8 +565,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 </script>
 
 <style>
-/* Original slot machine styles can stay in casino.css */
-
 /* Game Selector Styles */
 .game-selector {
     max-width: 600px;
@@ -703,7 +701,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 }
 
 .result-display {
-    font-size: 32px;
     font-weight: bold;
     margin: 20px 0;
     width: 60px;
@@ -716,18 +713,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 }
 
 .result-red {
+    margin-top: 5px;
+    font-size: 32px;
     background-color: #9e1313;
     color: white;
+    box-shadow: 0px 0px 40px 20px #9e1313;
 }
 
 .result-black {
+    margin-top: 5px;
+    font-size: 32px;
     background-color: black;
     color: white;
+    box-shadow: 0px 0px 40px 20px black;
 }
 
 .result-green {
+    margin-top: 5px;
+    font-size: 32px;
     background-color: #0a7e07;
     color: white;
+    box-shadow: 0px 0px 40px 20px #0a7e07;
 }
 
 .betting-area {

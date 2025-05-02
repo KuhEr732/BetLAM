@@ -103,7 +103,7 @@ $users = $stmt->fetchAll();
             <tr>
                 <th>Benutzer</th>
                 <th>Email</th>
-                <th>Guthaben (€)</th>
+                <th>Guthaben</th>
                 <th>Registriert</th>
             </tr>
         </thead>
@@ -112,7 +112,7 @@ $users = $stmt->fetchAll();
             <tr>
                 <td><?= htmlspecialchars($user['dtUsername']) ?></td>
                 <td><?= htmlspecialchars($user['dtEmail']) ?></td>
-                <td><?= number_format($user['dtBalance'], 2, ',', '.') ?></td>
+                <td><?= number_format($user['dtBalance'], 0, ',', '.') ?></td>
                 <td><?= $user['dtCreatedAt'] ?></td>
             </tr>
         <?php endforeach; ?>
