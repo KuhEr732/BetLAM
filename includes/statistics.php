@@ -37,15 +37,45 @@ $stmt->execute([
 // Ergebnis als Array abholen
 $users = $stmt->fetchAll();
 ?>
-
     <meta charset="UTF-8">
     <title>Top User Statistiken</title>
     <style>
-        body { font-family: sans-serif; background: #0D2A4A; color: white; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #2D4356; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #444; }
-        th { background-color: #129B7F; }
-        input, select, button { padding: 6px; margin: 5px; }
+        body {
+        font-family: sans-serif;
+        background: #ffffff;
+        color: #333;
+        padding: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #f9f9f9;
+        border: 1px solid #ccc;
+    }
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #e0e0e0;
+        color: #000;
+    }
+    input, select, button {
+        padding: 6px;
+        margin: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    button {
+        background-color: #129B7F;
+        color: white;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0e7e65;
+    }
     </style>
     <h1>🎰 Benutzer mit den meisten Coins</h1>
 
@@ -75,7 +105,6 @@ $users = $stmt->fetchAll();
                 <th>Email</th>
                 <th>Guthaben (€)</th>
                 <th>Registriert</th>
-                <th>Letzter Login</th>
             </tr>
         </thead>
         <tbody>
@@ -85,7 +114,6 @@ $users = $stmt->fetchAll();
                 <td><?= htmlspecialchars($user['dtEmail']) ?></td>
                 <td><?= number_format($user['dtBalance'], 2, ',', '.') ?></td>
                 <td><?= $user['dtCreatedAt'] ?></td>
-                <td><?= $user['dtLastLogin'] ?? '-' ?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>

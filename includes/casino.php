@@ -1,3 +1,42 @@
+<?php
+// Include database 
+require_once "db.php";
+
+// Check if user is logged in
+$userLoggedIn = isset($_SESSION['userId']);
+$userCredits = 0;
+
+// Get user credits from database if logged in
+if ($userLoggedIn) {
+    $userId = $_SESSION['userId'];
+    $userData = getUserById($userId);
+    
+    if ($userData) {
+        $userCredits = $userData['dtBalance'];
+    }
+}
+
+// Handle AJAX requests to update balance
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    if (!$userLoggedIn) {
+        echo json_encode(['success' => false, 'message' => 'User not logged in']);
+        exit;
+    }
+    
+    if ($_POST['action'] === 'update_balance') {
+        $newBalance = isset($_POST['balance']) ? floatval($_POST['balance']) : 0;
+        
+        // Make sure updateUserBalance() is working properly
+        global $pdo;
+        $stmt = $pdo->prepare("UPDATE tblUser SET dtBalance = ? WHERE idUser = ?");
+        $success = $stmt->execute([$newBalance, $_SESSION['userId']]);
+        
+        echo json_encode(['success' => $success]);
+        exit;
+    }
+}
+?>
+
 <link rel="stylesheet" href="css/casino.css">
 
 <div class="game-selector">
@@ -5,13 +44,13 @@
     <button id="roulette-button" class="game-button">Roulette</button>
 </div>
 
-<!-- Original Slot Machine Code -->
+<!-- Slot Machine Game -->
 <div class="slot-machine-container game-container" id="slots-game">
     <div class="slot-machine">
         <div class="header">
             <div class="credits">
                 <span class="coin-icon">🪙</span>
-                <span id="credits-display">100</span>
+                <span id="credits-display"><?php echo $userCredits; ?></span>
             </div>
         </div>
         
@@ -24,7 +63,7 @@
                         <div class="symbol">🍊</div>
                         <div class="symbol">🍇</div>
                         <div class="symbol">7️⃣</div>
-                        <div class="symbol">🍒</div> <!-- Wiederholen für nahtloses Scrollen -->
+                        <div class="symbol">🍒</div> <!-- Repeat for seamless scrolling -->
                     </div>
                 </div>
                 <div class="reel-container">
@@ -34,7 +73,7 @@
                         <div class="symbol">🍊</div>
                         <div class="symbol">🍇</div>
                         <div class="symbol">7️⃣</div>
-                        <div class="symbol">🍒</div> <!-- Wiederholen für nahtloses Scrollen -->
+                        <div class="symbol">🍒</div> <!-- Repeat for seamless scrolling -->
                     </div>
                 </div>
                 <div class="reel-container">
@@ -44,7 +83,7 @@
                         <div class="symbol">🍊</div>
                         <div class="symbol">🍇</div>
                         <div class="symbol">7️⃣</div>
-                        <div class="symbol">🍒</div> <!-- Wiederholen für nahtloses Scrollen -->
+                        <div class="symbol">🍒</div> <!-- Repeat for seamless scrolling -->
                     </div>
                 </div>
             </div>
@@ -52,19 +91,19 @@
         
         <div class="controls">
             <button class="spin-button" id="spin-button">DREHEN (10 CREDITS)</button>
-            <button class="add-credits" id="add-credits">+100</button>
+            <!-- Removed +100 coins button as requested -->
         </div>
     </div>
 </div>
 
-<!-- New Roulette Game -->
+<!-- Roulette Game -->
 <div class="roulette-container game-container" id="roulette-game" style="display: none;">
     <div class="roulette-game">
         <div class="header">
             <h2>Roulette</h2>
             <div class="credits">
                 <span class="coin-icon">🪙</span>
-                <span id="roulette-credits-display">100</span>
+                <span id="roulette-credits-display"><?php echo $userCredits; ?></span>
             </div>
         </div>
         
@@ -105,7 +144,7 @@
             
             <div class="controls">
                 <button class="spin-button" id="roulette-spin-button">DREHEN</button>
-                <button class="add-credits" id="roulette-add-credits">+100</button>
+                <!-- Removed +100 coins button as requested -->
             </div>
         </div>
         
@@ -136,35 +175,75 @@
         });
     });
 
-    // Original Slot Machine Script (Unchanged)
-    // Elemente
+    // Function to update the database - Direct implementation
+    function updateDatabaseBalance(balance) {
+        return new Promise((resolve, reject) => {
+            // Create form data
+            const formData = new FormData();
+            formData.append('action', 'update_balance');
+            formData.append('balance', balance);
+            
+            // Log for debugging
+            console.log('Updating balance to:', balance);
+            
+            // Send AJAX request
+            fetch('index.php?page=casino', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Database update response:', data);
+                if (data.success) {
+                    resolve(true);
+                } else {
+                    console.error('Failed to update balance:', data.message);
+                    resolve(false);
+                }
+            })
+            .catch(error => {
+                console.error('Error updating balance:', error);
+                resolve(false);
+            });
+        });
+    }
+
+    // Slot Machine Script
     const reelsContainer = document.getElementById('reels-container');
     const reel1 = document.getElementById('reel1');
     const reel2 = document.getElementById('reel2');
     const reel3 = document.getElementById('reel3');
     const spinButton = document.getElementById('spin-button');
-    const addCreditsButton = document.getElementById('add-credits');
     const creditsDisplay = document.getElementById('credits-display');
 
-    // Spielvariablen
-    let credits = 100;
+    // Game variables
+    let credits = parseInt(creditsDisplay.textContent) || 0;
     let spinning = false;
     const symbols = ['🍒', '🍋', '🍊', '🍇', '7️⃣'];
     let results = [0, 0, 0];
+    const isLoggedIn = <?php echo $userLoggedIn ? 'true' : 'false'; ?>;
 
-    // Aktualisiere die Anzeige der Credits
+    // Update credits display
     function updateCreditsDisplay() {
         creditsDisplay.textContent = credits;
         
-        // Deaktiviere den Spin-Button, wenn nicht genug Credits vorhanden sind
+        // Also update roulette credits display to keep in sync
+        document.getElementById('roulette-credits-display').textContent = credits;
+        
+        // Disable the spin button if not enough credits
         if (credits < 10) {
             spinButton.disabled = true;
         } else {
             spinButton.disabled = false;
         }
+        
+        // Update in database if logged in
+        if (isLoggedIn) {
+            updateDatabaseBalance(credits);
+        }
     }
 
-    // Zeige Gewinn-Effekt an
+    // Show win effect
     function showWinEffect(amount) {
         const winEffect = document.createElement('div');
         winEffect.className = 'win-effect';
@@ -188,7 +267,7 @@
         }, 3000);
     }
 
-    // Zeige Verlust-Effekt an
+    // Show lose effect
     function showLoseEffect() {
         const loseEffect = document.createElement('div');
         loseEffect.className = 'lose-effect';
@@ -199,7 +278,7 @@
         
         const loseSubtext = document.createElement('div');
         loseSubtext.className = 'lose-subtext';
-        loseSubtext.textContent = 'Füge mehr hinzu, um weiterzuspielen';
+        loseSubtext.textContent = 'Kontaktieren Sie den Support für mehr Credits';
         
         loseEffect.appendChild(loseText);
         loseEffect.appendChild(loseSubtext);
@@ -212,21 +291,21 @@
         }, 3000);
     }
 
-    // Prüfe auf Gewinn
+    // Check for win
     function checkWin(results) {
-        // Prüfe, ob alle Symbole gleich sind
+        // Check if all symbols are the same
         if (results[0] === results[1] && results[1] === results[2]) {
             const multiplier = results[0] === 4 ? 50 : results[0] === 3 ? 25 : results[0] === 2 ? 15 : results[0] === 1 ? 10 : 5;
             const amount = 10 * multiplier;
             credits += amount;
             showWinEffect(amount);
         } else if (results[0] === results[1] || results[1] === results[2]) {
-            // Zwei übereinstimmende Symbole
+            // Two matching symbols
             const amount = 5;
             credits += amount;
             showWinEffect(amount);
         } else {
-            // Zeige Verlust-Effekt, wenn keine Credits mehr vorhanden sind
+            // Show lose effect if no more credits
             if (credits < 10) {
                 showLoseEffect();
             }
@@ -235,7 +314,7 @@
         updateCreditsDisplay();
     }
 
-    // Stoppe eine Walze an einer bestimmten Position
+    // Stop a reel at a specific position
     function stopReel(reelElement, position) {
         return new Promise(resolve => {
             reelElement.classList.remove('spinning');
@@ -243,11 +322,11 @@
             
             setTimeout(() => {
                 resolve();
-            }, 500); // Warte auf das Ende der Übergangsanimation
+            }, 500); // Wait for transition animation to end
         });
     }
 
-    // Drehen der Walzen
+    // Spin the reels
     async function spin() {
         if (spinning || credits < 10) return;
         
@@ -255,23 +334,23 @@
         updateCreditsDisplay();
         spinning = true;
         
-        // Entferne vorhandene Effekte
+        // Remove existing effects
         const effects = reelsContainer.querySelectorAll('.win-effect, .lose-effect');
         effects.forEach(effect => reelsContainer.removeChild(effect));
         
-        // Starte Spin-Animation
+        // Start spin animation
         reel1.classList.add('spinning');
         reel2.classList.add('spinning');
         reel3.classList.add('spinning');
         
-        // Generiere zufällige Ergebnisse
+        // Generate random results
         results = [
             Math.floor(Math.random() * symbols.length),
             Math.floor(Math.random() * symbols.length),
             Math.floor(Math.random() * symbols.length)
         ];
         
-        // Stoppe die Walzen nacheinander
+        // Stop the reels one after another
         await new Promise(resolve => setTimeout(resolve, 800));
         await stopReel(reel1, results[0]);
         
@@ -281,35 +360,23 @@
         await new Promise(resolve => setTimeout(resolve, 400));
         await stopReel(reel3, results[2]);
         
-        // Prüfe auf Gewinn
+        // Check for win
         checkWin(results);
         spinning = false;
     }
 
-    // Event-Listener
+    // Event listeners
     spinButton.addEventListener('click', spin);
     
-    addCreditsButton.addEventListener('click', () => {
-        credits += 100;
-        updateCreditsDisplay();
-        
-        // Entferne Verlust-Effekt, wenn Credits hinzugefügt werden
-        const loseEffect = reelsContainer.querySelector('.lose-effect');
-        if (loseEffect) {
-            reelsContainer.removeChild(loseEffect);
-        }
-    });
-    
-    // Initialisierung
+    // Initialize
     updateCreditsDisplay();
 
-    // New Roulette Game Script
+    // Roulette Game Script
     document.addEventListener('DOMContentLoaded', function() {
         // Roulette Elements
         const rouletteWheel = document.getElementById('roulette-wheel');
         const rouletteBall = document.getElementById('roulette-ball');
         const rouletteSpinButton = document.getElementById('roulette-spin-button');
-        const rouletteAddCreditsButton = document.getElementById('roulette-add-credits');
         const rouletteCreditsDisplay = document.getElementById('roulette-credits-display');
         const betAmount = document.getElementById('bet-amount');
         const betType = document.getElementById('bet-type');
@@ -319,7 +386,6 @@
         const rouletteMessage = document.getElementById('roulette-message');
 
         // Roulette variables
-        let rouletteCredits = 100;
         let isSpinning = false;
         
         // Roulette numbers and their properties
@@ -339,12 +405,12 @@
             { number: 35, color: 'black' }, { number: 3, color: 'red' }, { number: 26, color: 'black' }
         ];
 
-        // Update credits display
+        // Update roulette credits display
         function updateRouletteCreditsDisplay() {
-            rouletteCreditsDisplay.textContent = rouletteCredits;
+            rouletteCreditsDisplay.textContent = credits;
             
             // Disable spin button if not enough credits
-            if (rouletteCredits < parseInt(betAmount.value)) {
+            if (credits < parseInt(betAmount.value)) {
                 rouletteSpinButton.disabled = true;
             } else {
                 rouletteSpinButton.disabled = false;
@@ -418,17 +484,19 @@
             
             if (win) {
                 const winAmount = bet * multiplier;
-                rouletteCredits += winAmount;
+                credits += winAmount;
                 showRouletteMessage(`GEWINN! +${winAmount} CREDITS`, true);
             } else {
                 showRouletteMessage('VERLOREN');
                 
                 // Show no credits message if needed
-                if (rouletteCredits < 5) {
-                    showRouletteMessage('KEINE CREDITS MEHR! Füge mehr hinzu, um weiterzuspielen');
+                if (credits < 5) {
+                    showRouletteMessage('KEINE CREDITS MEHR! Kontaktieren Sie den Support für mehr Credits');
                 }
             }
             
+            // Update both displays to keep in sync
+            updateCreditsDisplay();
             updateRouletteCreditsDisplay();
         }
 
@@ -437,9 +505,10 @@
             if (isSpinning) return;
             
             const bet = parseInt(betAmount.value);
-            if (rouletteCredits < bet) return;
+            if (credits < bet) return;
             
-            rouletteCredits -= bet;
+            credits -= bet;
+            updateCreditsDisplay();
             updateRouletteCreditsDisplay();
             isSpinning = true;
             
@@ -477,11 +546,6 @@
 
         // Event listeners
         rouletteSpinButton.addEventListener('click', spinRouletteWheel);
-        
-        rouletteAddCreditsButton.addEventListener('click', () => {
-            rouletteCredits += 100;
-            updateRouletteCreditsDisplay();
-        });
         
         betType.addEventListener('change', () => {
             if (betType.value === 'single') {
@@ -717,21 +781,11 @@
 .spin-button {
     background-color: #9e1313;
     color: white;
-    flex-grow: 3;
+    width: 100%;
 }
 
 .spin-button:hover:not(:disabled) {
     background-color: #c41717;
-}
-
-.add-credits {
-    background-color: #4CAF50;
-    color: white;
-    flex-grow: 1;
-}
-
-.add-credits:hover {
-    background-color: #5cbc5f;
 }
 
 button:disabled {

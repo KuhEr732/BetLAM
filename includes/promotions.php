@@ -11,12 +11,12 @@ if (!isset($_SESSION['userId'])) {
     /* Allgemeine Styling-Regeln für den Body */
     body { 
         font-family: sans-serif; 
-        background: #0D2A4A; 
-        color: white; 
+        background: #ffffff; 
+        color: #333; 
         text-align: center; 
         padding: 50px; 
     }
-    
+
     /* Styling für den Button */
     button { 
         font-size: 20px; 
@@ -26,28 +26,44 @@ if (!isset($_SESSION['userId'])) {
         border: none; 
         border-radius: 10px; 
         cursor: pointer; 
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-    
+
     /* Hover-Effekt für den Button */
     button:hover { 
         background: #0f7a66; 
     }
-    
+
     /* Styling für die Nachricht (z.B. Erfolgs- oder Fehlermeldung) */
     .message { 
         margin-top: 30px; 
         font-size: 18px; 
         font-weight: bold; 
     }
-    
+
     /* Fehler-Nachricht (rote Farbe) */
     .error { 
-        color: #FF6B6B; 
+        color: #D32F2F; 
     }
-    
+
     /* Erfolgs-Nachricht (grüne Farbe) */
     .success { 
-        color: #4ECA64; 
+        color: #388E3C; 
+    }
+
+    /* Container für animierte Münzen */
+    #coin-container {
+        position: relative;
+        height: 0;
+        pointer-events: none;
+    }
+
+    /* Keyframe-Animation für das Fallen der Münzen */
+    @keyframes drop {
+        to {
+            transform: translateY(300px);  
+            opacity: 0;  
+        }
     }
 </style>
 
